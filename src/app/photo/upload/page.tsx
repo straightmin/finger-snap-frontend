@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Camera, Upload, X, Plus, ArrowLeft, Eye, Heart, MessageCircle } from 'lucide-react';
+import { Camera, Upload, X, Plus, ArrowLeft, Heart, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -13,7 +13,7 @@ import { Modal } from '@/components/common/Modal';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { useAuth } from '@/components/providers/AuthProvider';
 import type { PhotoUploadData } from '@/types/photo';
-import { UPLOAD_CONSTANTS, ERROR_MESSAGES } from '@/lib/constants';
+import { UPLOAD_CONSTANTS } from '@/lib/constants';
 
 export default function PhotoUploadPage() {
   const router = useRouter();
@@ -48,11 +48,11 @@ export default function PhotoUploadPage() {
 
   const validateFile = (file: File): string | null => {
     if (file.size > UPLOAD_CONSTANTS.MAX_FILE_SIZE) {
-      return ERROR_MESSAGES.FILE_TOO_LARGE;
+      return '파일 크기가 너무 큽니다.';
     }
     
     if (!UPLOAD_CONSTANTS.ALLOWED_FORMATS.includes(file.type as any)) {
-      return ERROR_MESSAGES.INVALID_FILE_FORMAT;
+      return '지원하지 않는 파일 형식입니다.';
     }
 
     return null;
@@ -101,12 +101,11 @@ export default function PhotoUploadPage() {
       i === index ? { ...img, ...updates } : img
     ));
     
-    if (updates.title || updates.description) {
-      setErrors(prev => {
-        const { [`title_${index}`]: titleError, [`description_${index}`]: descError, ...rest } = prev;
-        return rest;
-      });
-    }
+    // Clear errors when user updates fields
+    setErrors(prev => {
+      const { [`title_${index}`]: titleError, [`description_${index}`]: descError, ...rest } = prev;
+      return rest;
+    });
   };
 
   const removeImage = (index: number) => {
@@ -134,23 +133,8 @@ export default function PhotoUploadPage() {
   };
 
   const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-    let isValid = true;
-
-    images.forEach((image, index) => {
-      if (!image.title.trim()) {
-        newErrors[`title_${index}`] = ERROR_MESSAGES.TITLE_REQUIRED;
-        isValid = false;
-      }
-      
-      if (image.description.length < UPLOAD_CONSTANTS.MIN_DESCRIPTION_LENGTH) {
-        newErrors[`description_${index}`] = ERROR_MESSAGES.DESCRIPTION_TOO_SHORT;
-        isValid = false;
-      }
-    });
-
-    setErrors(newErrors);
-    return isValid;
+    // 제목과 설명은 모두 선택사항이므로 항상 유효
+    return images.length > 0;
   };
 
   const handleUpload = async () => {
@@ -295,11 +279,13 @@ export default function PhotoUploadPage() {
                   </div>
                   <div className="p-4">
                     <h4 className="font-medium text-black mb-2">
-                      {currentImage.title || "제목을 입력하세요"}
+                      {currentImage.title.trim() || "Untitled"}
                     </h4>
-                    <p className="text-gray-600 text-sm leading-relaxed mb-3 line-clamp-2">
-                      {currentImage.description || "사진에 담긴 이야기를 들려주세요..."}
-                    </p>
+                    {currentImage.description.trim() && (
+                      <p className="text-gray-600 text-sm leading-relaxed mb-3 line-clamp-2">
+                        {currentImage.description}
+                      </p>
+                    )}
                     {currentImage.tags.length > 0 && (
                       <div className="flex flex-wrap gap-1 mb-3">
                         {currentImage.tags.map((tag, index) => (
@@ -323,10 +309,6 @@ export default function PhotoUploadPage() {
                       </div>
                       <div className="flex items-center space-x-3 text-xs text-gray-500">
                         <div className="flex items-center space-x-1">
-                          <Eye className="w-3 h-3" />
-                          <span>0</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
                           <Heart className="w-3 h-3" />
                           <span>0</span>
                         </div>
@@ -345,46 +327,38 @@ export default function PhotoUploadPage() {
             <div className="space-y-6">
               <div>
                 <Label htmlFor="title" className="text-sm font-medium text-gray-700">
-                  제목 *
+                  제목
                 </Label>
                 <Input
                   id="title"
                   value={currentImage.title}
                   onChange={(e) => updateImage(currentImageIndex, { title: e.target.value })}
-                  placeholder="사진의 제목을 입력하세요"
+                  placeholder="사진의 제목을 입력하세요 (선택사항)"
                   className="mt-2 border-gray-300 focus:border-gray-500 focus:ring-0"
                   maxLength={UPLOAD_CONSTANTS.MAX_TITLE_LENGTH}
                 />
-                {errors[`title_${currentImageIndex}`] && (
-                  <p className="text-red-600 text-xs mt-1">
-                    {errors[`title_${currentImageIndex}`]}
-                  </p>
-                )}
+                <p className="text-xs text-gray-500 mt-1">
+                  빈칸으로 두면 'Untitled'로 표시됩니다
+                </p>
               </div>
 
               <div>
                 <Label htmlFor="description" className="text-sm font-medium text-gray-700">
-                  이야기 *
+                  이야기
                 </Label>
                 <Textarea
                   id="description"
                   value={currentImage.description}
                   onChange={(e) => updateImage(currentImageIndex, { description: e.target.value })}
-                  placeholder="이 사진에 담긴 감정과 의미를 깊이 있게 들려주세요. 어떤 순간이었나요? 무엇을 느꼈나요? 어떤 이야기가 숨어있나요?"
+                  placeholder="이 사진에 담긴 감정과 의미를 깊이 있게 들려주세요. (선택사항)"
                   rows={8}
                   className="mt-2 border-gray-300 focus:border-gray-500 focus:ring-0 resize-none"
                   maxLength={UPLOAD_CONSTANTS.MAX_DESCRIPTION_LENGTH}
                 />
                 <div className="flex justify-between items-center mt-2">
                   <p className="text-xs text-gray-500">
-                    {currentImage.description.length}/{UPLOAD_CONSTANTS.MAX_DESCRIPTION_LENGTH}자 
-                    (최소 {UPLOAD_CONSTANTS.MIN_DESCRIPTION_LENGTH}자 이상 권장)
+                    {currentImage.description.length}/{UPLOAD_CONSTANTS.MAX_DESCRIPTION_LENGTH}자
                   </p>
-                  {errors[`description_${currentImageIndex}`] && (
-                    <p className="text-red-600 text-xs">
-                      {errors[`description_${currentImageIndex}`]}
-                    </p>
-                  )}
                 </div>
               </div>
 
@@ -456,7 +430,7 @@ export default function PhotoUploadPage() {
                     </Button>
                     <Button
                       onClick={handleUpload}
-                      disabled={isUploading || !validateForm()}
+                      disabled={isUploading || images.length === 0}
                       className="bg-black text-white hover:bg-gray-800 disabled:opacity-50"
                     >
                       {isUploading ? `업로드 중... ${uploadProgress}%` : '게시하기'}

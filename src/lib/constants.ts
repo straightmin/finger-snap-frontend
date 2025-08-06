@@ -1,7 +1,6 @@
 export const UPLOAD_CONSTANTS = {
   MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
   ALLOWED_FORMATS: ['image/jpeg', 'image/jpg', 'image/png'] as const,
-  MIN_DESCRIPTION_LENGTH: 50,
   MAX_DESCRIPTION_LENGTH: 1000,
   MAX_TITLE_LENGTH: 100,
   MAX_TAGS: 10,
@@ -37,7 +36,6 @@ export const API_ENDPOINTS = {
 export const PHOTO_SORT_OPTIONS = [
   { value: 'latest', label: '최신순' },
   { value: 'popular', label: '인기순' },
-  { value: 'views', label: '조회순' },
   { value: 'comments', label: '댓글순' },
 ] as const;
 
@@ -75,8 +73,6 @@ export const ERROR_MESSAGES = {
   UPLOAD_FAILED: '파일 업로드에 실패했습니다.',
   INVALID_FILE_FORMAT: '지원하지 않는 파일 형식입니다.',
   FILE_TOO_LARGE: '파일 크기가 너무 큽니다.',
-  DESCRIPTION_TOO_SHORT: `설명은 최소 ${UPLOAD_CONSTANTS.MIN_DESCRIPTION_LENGTH}자 이상 입력해주세요.`,
-  TITLE_REQUIRED: '제목을 입력해주세요.',
 } as const;
 
 export const SUCCESS_MESSAGES = {

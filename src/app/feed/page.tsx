@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Search, Filter, Grid3X3, List, Eye, Heart, MessageCircle } from 'lucide-react';
+import { Search, Filter, Grid3X3, List, Heart, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -136,8 +136,6 @@ export default function FeedPage() {
     switch (sortBy) {
       case 'popular':
         return b.stats.likes - a.stats.likes;
-      case 'views':
-        return b.stats.views - a.stats.views;
       case 'comments':
         return b.stats.comments - a.stats.comments;
       default:

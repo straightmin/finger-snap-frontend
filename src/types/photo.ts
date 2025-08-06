@@ -93,6 +93,6 @@ export interface PhotoDetailResponse extends Photo {
   relatedPhotos?: Photo[];
 }
 
-export type PhotoSortBy = 'latest' | 'popular' | 'views' | 'comments';
+export type PhotoSortBy = 'latest' | 'popular' | 'comments';
 export type PhotoViewMode = 'grid' | 'list';
 export type PhotoVisibility = 'public' | 'private';
