@@ -52,7 +52,7 @@ export function Modal({
             )}
           </div>
         )}
-        <div className={`${(title || showCloseButton) ? 'p-6' : 'p-6'}`}>
+        <div className="p-6">
           {children}
         </div>
       </div>
