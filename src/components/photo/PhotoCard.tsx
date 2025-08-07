@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { MessageCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ImageOptimized } from "@/components/common/ImageOptimized";
 import { LikeButton } from "@/components/photo/LikeButton";
+import { CommentCount } from "@/components/comment/CommentList";
 import type { PhotoCard as PhotoCardType, PhotoViewMode } from "@/types/photo";
 
 interface PhotoCardProps {
@@ -87,10 +87,10 @@ export function PhotoCard({
                                     initialIsLiked={photo.isLiked || false}
                                     className="text-sm"
                                 />
-                                <div className="flex items-center space-x-1">
-                                    <MessageCircle className="w-4 h-4" />
-                                    <span>{photo.stats.comments}</span>
-                                </div>
+                                <CommentCount
+                                    count={photo.stats.comments}
+                                    photoId={parseInt(photo.id)}
+                                />
                             </div>
                         </div>
                     </div>
@@ -145,10 +145,10 @@ export function PhotoCard({
                             initialIsLiked={photo.isLiked || false}
                             className="text-sm"
                         />
-                        <div className="flex items-center space-x-1">
-                            <MessageCircle className="w-4 h-4" />
-                            <span>{photo.stats.comments}</span>
-                        </div>
+                        <CommentCount
+                            count={photo.stats.comments}
+                            photoId={parseInt(photo.id)}
+                        />
                     </div>
                 </div>
             </div>
