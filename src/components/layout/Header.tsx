@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Camera } from "lucide-react";
+import { Camera, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/components/providers/AuthProvider";
 
@@ -31,6 +31,16 @@ export function Header() {
                     <div className="flex items-center space-x-4">
                         {isAuthenticated ? (
                             <>
+                                <Button
+                                    variant="ghost"
+                                    asChild
+                                    className="text-gray-600 hover:text-black"
+                                >
+                                    <Link href="/profile">
+                                        <User className="w-4 h-4 mr-2" />
+                                        프로필
+                                    </Link>
+                                </Button>
                                 <Button
                                     variant="ghost"
                                     onClick={handleLogout}
