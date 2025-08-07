@@ -51,7 +51,7 @@ export default function PhotoUploadPage() {
       return '파일 크기가 너무 큽니다.';
     }
     
-    if (!UPLOAD_CONSTANTS.ALLOWED_FORMATS.includes(file.type as any)) {
+    if (!UPLOAD_CONSTANTS.ALLOWED_FORMATS.includes(file.type)) {
       return '지원하지 않는 파일 형식입니다.';
     }
 
